@@ -42,11 +42,12 @@ class InferenceShell(cmd.Cmd):
     def do_infer(self, line):
         """ Run inference on a single sentence. """
         inputs = self.tokenizer(line, return_tensors="pt")
+        args = {}
         if self.min_length:
-            inputs["min_length"] = self.min_length
+            args["min_length"] = self.min_length
         if self.max_length:
-            inputs["max_length"] = self.max_length
-        outputs = self.model.generate(**inputs)
+            args["max_length"] = self.max_length
+        outputs = self.model.generate(inputs["input_ids"].to(0), **args)
         print(self.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     def do_hf_map(self, line):
